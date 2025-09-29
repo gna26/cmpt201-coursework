@@ -1,0 +1,53 @@
+
+#define _POSIX_C_SOURCE 200809L
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void storeLine(char *string, char *history[], int *index) {
+  if (*index == 5) {
+    *index = 0;
+  }
+  history[*index] = string;
+  (*index)++;
+}
+
+void printArr(char *history[], int *index) {
+  int count;
+  int oldIndex;
+
+  if (*index < 5) {
+    count = *index;
+  } else {
+    count = 5;
+  }
+
+  oldIndex = (*index - count + 5) % 5;
+
+  for (int i = 0; i < count; i++) {
+    int index2 = (oldIndex + i) % 5;
+    if (history[index2]) {
+      printf("%s\n", history[index2]);
+    }
+  }
+}
+
+int main() {
+  char *history[5] = {NULL};
+  char *line = NULL;
+  size_t len = 0;
+  size_t read;
+  int index = 0;
+
+  while (true) {
+    printf("Enter input: ");
+    read = getline(&line, &len, stdin);
+    if (strcmp(line, "print") == 0) {
+      printArr(history, &index);
+      break;
+    } else {
+      storeLine(line, history, &index);
+    }
+  }
+}
