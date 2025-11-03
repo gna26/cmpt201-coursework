@@ -1,0 +1,181 @@
+
+CMPT-201
+
+    Sections
+    Notes
+    Labs
+    Assignments
+    Resources
+    Course-Info
+    Solutions
+
+Lab 7 - Map Reduce
+
+
+Prerequisite Skills for This Lab
+
+    Understand MapReduce [Required: Gives understanding for assignment!]
+        Read through assignment A10 where you will have to implement a MapReduce system.
+        Understand map.
+        Understand reduce.
+        Read at least the abstract of MapReduce.
+    C Skills
+        Able to use structs and arrays.
+        Able to use pointers: dereference.
+        Able to compile, run, and debug C programs.
+        Understand in-out parameters to a function.
+
+
+Task 1: Debugging with the Debugger
+
+    Create a folder for Lab 7 in your cmpt201 docker container. Copy in the following files:
+        lab7_template.c - Rename this to lab7.c.
+         
+    Understand MapReduce
+        MapReduce is a common programming model to process a large amount of data.
+        The data we are working with are key-value pairs, such as [(1, 4), (2, 35), (3, 5)].
+        The map() function processes a list of key-value pair to generate a list of intermediate key-value pairs.
+        The groupByKey() function processes a list of intermediate key-value pairs and groups them together. Usually the group function would group all occurrences of the same key together; however, in this example we're going to do a similar task of grouping together values.
+        The reduce() function processes the intermediate key-value pairs to generate the final output.
+        This MapReduce approach is well suited to big-data processing systems which perform operations on data in parallel to speed up the system.
+        In this lab you'll implement a small version of map, group, and reduce.
+         
+
+    Understand Lab 7's code
+        The program's main() reads some input values from the user. It stores these values along with a key (the line number, 1, 2, ...) in an array of structs.
+        The program will then map each of these input values to an intermediate value by doubling the user's input value. It preserves the key (the line number).
+        Next it groups together the key-value pairs by which ones have the same (doubled) values.
+        Finally, it reduces each grouped key-value pair by printing it to the screen.
+        Here is the process in a diagram:
+        If you see this, the image did not load!
+
+     
+    Implement map()
+        main() calls your map() function for each key-value input pair:
+        void map(Input *input, IntermediateInput *intermediate_input)
+        Look at where it calls your function and study the arguments it passes in:
+            The input struct contains:
+                line_number: the key for our pair, corresponding to the order the user typed in the value: 1, 2, 3, ...
+                value: the value the user entered.
+            You must write code in the map() function to fully populate the intermediate_input struct:
+                Set its value to be the input's value times two (i.e. * 2).
+                Preserve the line number (key) from the input into the intermediate_input struct.
+        Hint - # Lines
+        Your solution will be about 2 lines of code!
+        Hint - Pointers
+        Watch out for pointers in all of this lab.
+        Hint - Fill the struct
+        Just copy the fields from the input to the intermediate_input structs, but make sure to multiply the value by two.
+        Hint - Pointer to struct
+        In C, if you have a pointer-to-a-struct named input, you can access its line_number field using: input->line_number
+
+         
+    Implement groupByKey()
+        main() calls this function once for each intermediate input struct.
+        Look at where it calls your function and study the arguments it passes you:
+            input: A single intermediate input which contains the line number and the (doubled) value.
+            output: Array of Output structs which main() has previously filled in using your map() function.
+            result_count: In-out parameter. It records the number of structs in the output array. Change this if you use another struct in the output array.
+        Grouping Algorithm
+            If the doubled_value in the input already has an entry in the output array, then add its line number to the line_numbers array in the correct struct in the output array.
+            If the doubled_value in the input does not already have an entry in the output array, then add a new entry to the output array by recording the doubled_value and the line_number.
+        Hints
+            Hint - Track counts
+            When you add an element to an array, you need to increase the variable that tracks how many elements are in the array.
+            Hint - No overflow
+            Notice that main() preallocates each array for us to be at least as big as we will need. You don't need to worry about overflows. You don't need to dynamically allocate any memory.
+            Hint - Search
+            This function will be given one input struct, and needs to search through the array of output structs to determine which of the existing output structs (of which we know there are *result_count of them filled in) has the same doubled value as the input struct.
+            Hint - New struct
+            If the input does not match any existing output struct, then you'll need to use the next "unused" output struct in the array. Since the array is pre-allocated to be large, we can just use the next one, but we have to increment *result_count too.
+
+             
+    Implement reduce()
+        main() calls your reduce() function for each of the grouped key-value pairs:
+        *`void reduce(Output output)`**
+        See the Output struct in the provided code for the fields in the struct you are given.
+        You must print out the doubled value, along with all the line numbers, in the format matching:
+        (10, [1, 2, 4])
+        This format is the modified value followed by a comma-separated list of line numbers.
+        Hint - Just print
+        There is no processing going on in this function, you are just displaying one Output struct nicely. The calling code will hand you Output structs one at a time.
+        Hint - Commas
+        Watch the placement of commas.
+        Hint - Brackets
+        Ensure you get your brackets and line-feeds correct in the output.
+
+         
+    Test and Debug
+        Run your program with the inputs: 5 5 2 5 3 2 (one line per) and check your output matches the figure above.
+        Try other values, such as just a single number, numerous copies of just a single number, etc.
+
+Sample Output 1
+
+Enter values (one per line). Type 'end' to finish:
+5
+5
+2
+5
+3
+2
+end
+(10, [1, 2, 4])
+(4, [3, 6])
+(6, [5])
+
+Sample Output 2
+
+Enter values (one per line). Type 'end' to finish:
+1
+2
+3
+100
+3
+2
+1
+end
+(2, [1, 7])
+(4, [2, 6])
+(6, [3, 5])
+(200, [4])
+
+Sample Output 3
+
+Enter values (one per line). Type 'end' to finish:
+end
+
+
+3. Reviewing (10 mins)
+
+    During the last 10 minutes of the in-person lab, TAs will walk through the solution.
+    Discussion of Code
+        Show each function and explain how it implements its goal.
+        Discuss the use of pointers and arrays, highlighting them in the solution.
+    Discussion of MapReduce
+        Explain the big picture of MapReduce as a tool for solving problems.
+        Show the calling code in main() and explain that it does not depend on the operations being done in map(), groupByKey(), or reduce(), so it is a general framework for manipulating data.
+    Now that you have seen the solution:
+        Finish your solution: don't just copy the solution, but it is OK if you use the ideas you saw to help you finish.
+
+
+4. Optional Challenges
+
+    Optional: Assert the size
+        In your code, every time you are going to add an element to an array, assert that it will fit in the array.
+        Check how the code declares the size of the arrays.
+        Test your code by reducing the size of the arrays.
+    Optional: Refactor code
+        Look at your code, and the code in main(), and improve it.
+        Suggestion - Scope
+        Suggestion - Simplify
+        Suggestion - Search function
+
+
+Submission
+
+Submit your lab7.c C code to CourSys; the file name must be an exact match to what CourSys is expecting, otherwise it won't accept it.
+
+Submissions will be marked for completion. It must be valid C code that runs (however we are unlikely to actually compile and run the code). You do not need to complete any optional steps.
+
+This site was built using Grav and the Open Matter Course Hub skeleton package by hibbittsdesign.org
+

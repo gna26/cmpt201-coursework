@@ -1,0 +1,12 @@
+
+#include <stdio.h>
+#include <pthread.h>
+
+void func() {
+
+}
+
+int main () {
+  pthread_t thread1 = pthread(&thread1, NULL, func, NULL); 
+
+}
