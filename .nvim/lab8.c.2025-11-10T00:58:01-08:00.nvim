@@ -1,0 +1,28 @@
+┆ }
+  155 }
+  156
+  157 void delete_table(count_map_t word_map) {
+  158 ┆ word_count_entry_t *current, *tmp;
+  159 ┆ HASH_ITER(hh, word_map, current, tmp) {
+  160 ┆ ┆ HASH_DEL(word_map, current);
+  161 ┆ ┆ free(current);
+  162 ┆ }
+  163 }
+  164
+  165 count_thread_args_t *pack_args(count_map_t *map, word_t *words,
+  166 ┆ ┆ ┆ ┆ ┆ ┆ ┆ ┆ ┆ ┆ ┆ ┆ ┆ ┆ ┆  size_t num_words, pthread_mutex_t *lock) {
+  167 ┆ count_thread_args_t *args = malloc(sizeof(count_thread_args_t));
+  168 ┆ args->map = map;
+  169 ┆ args->words = words;
+  170 ┆ args->num_words = num_words;
+  171 ┆ args->lock = lock;
+  172 ┆ return args;
+  173 }
+  174
+  175 static void *counter_thread_func(void *param) {
+  176 ┆ // Call count_words_in_chunk with the appropriate arguments
+  177 ┆ count_thread_args_t *args = (count_thread_args_t *)param;
+  178 ┆ add_word_counts_in_chunk(args->map, args->words, args->num_words, args->lock);
+  179 ┆
+  180 ┆ return NULL;
+  181 }
