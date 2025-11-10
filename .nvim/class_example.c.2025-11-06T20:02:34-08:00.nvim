@@ -1,0 +1,10 @@
+#include <pthread.h>
+#include <stdio.h>
+
+void *func() { return NULL; }
+
+int main() {
+  pthread_t thread1;
+  pthread_create(&thread1, NULL, func, NULL);
+  pthread_join(thread1, NULL);
+}

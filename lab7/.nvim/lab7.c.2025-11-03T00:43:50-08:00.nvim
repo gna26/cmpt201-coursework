@@ -80,33 +80,29 @@ void map(Input *input, IntermediateInput *intermediate_input) {
 }
 
 void groupByKey(IntermediateInput *input, Output *output, int *result_count) {
-  int in = 0;
   for (int i = 0; i < *result_count; i++) {
-    if (input->doubled_value == output[i].doubled_value) {
-      output[i].line_numbers[output->count] = input->line_number;
-      in = 1;
-      output[i].count++;
+    if (output[i].doubled_value == input->doubled_value) {
+      output[1].line_numbers[output[i].count++] = input->line_number;
+      return;
     }
   }
-  if (*result_count == 0) {
-    output[0].doubled_value = input->doubled_value;
-    output[0].line_numbers[0] = input->line_number;
-    (*result_count)++;
-    output[0].count = 1;
-  }
-  if (!in) {
-    output[*result_count].doubled_value = input->doubled_value;
-    output[*result_count].line_numbers[output->count] = input->line_number;
-    (*result_count)++;
-    output[*result_count].count++;
-  }
+  output[*result_count].doubled_value = input->doubled_value;
+  output[*result_count].line_numbers[0] = input->line_number;
+  output[*result_count].count = 1;
+  (*result_count)++;
+  // Group entries
+  // If the doubled value exists in the output entries, add it to the output's
+  // line_numbers list If it doesn't exist, add a new entry to the output
 }
 
 void reduce(Output *output) {
-  printf("(%d, [", output->doubled_value);
-  for (int i = 0; i < output->count; i++) {
+  printf("(%d, [",output->doubled_value);
+  for (int i =0; i < output->count; i++) {
     printf("%d", output->line_numbers[i]);
+    if (i < output->count - 1) {
+      printf(", ");
+    }
     printf("])\n");
-  }
+    }
   // Print the doubled number and line numbers
 }

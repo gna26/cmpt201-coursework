@@ -1,0 +1,21 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <string.h>
+
+void *func(void *string) {
+  char *s = (char *)string;
+  printf("inside thread");
+  return (void *)strlen(s);
+}
+
+int main() {
+  pthread_t thread1;
+  char *s = "string";
+  pthread_create(&thread1, NULL, func, s);
+
+  void *retval;
+  pthread_join(thread1, &retval);
+
+  int *ans = (int *)retval;
+  printf("%d", *ans);
+}

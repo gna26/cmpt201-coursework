@@ -1,0 +1,16 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <string.h>
+
+void *func(void *string) {
+  pid_t gettid();
+  char* s = (char*) string;
+  return strlen((char*)string);
+}
+
+int main() {
+  pthread_t thread1;
+
+  pthread_create(&thread1, NULL, func, NULL);
+  pthread_join(thread1, NULL);
+}

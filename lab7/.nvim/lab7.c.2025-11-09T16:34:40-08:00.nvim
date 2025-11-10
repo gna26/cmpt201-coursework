@@ -85,28 +85,30 @@ void groupByKey(IntermediateInput *input, Output *output, int *result_count) {
     if (input->doubled_value == output[i].doubled_value) {
       output[i].line_numbers[output->count] = input->line_number;
       in = 1;
-      output[i].count++;
+      output->count++;
     }
   }
   if (*result_count == 0) {
     output[0].doubled_value = input->doubled_value;
     output[0].line_numbers[0] = input->line_number;
-    (*result_count)++;
-    output[0].count = 1;
+    *result_count++;
+    output->count++;
   }
   if (!in) {
     output[*result_count].doubled_value = input->doubled_value;
     output[*result_count].line_numbers[output->count] = input->line_number;
-    (*result_count)++;
-    output[*result_count].count++;
+    *result_count++;
+    output->count++;
   }
 }
 
 void reduce(Output *output) {
+  if (output->count <= 0)
+    return;
   printf("(%d, [", output->doubled_value);
   for (int i = 0; i < output->count; i++) {
     printf("%d", output->line_numbers[i]);
-    printf("])\n");
+   printf("])\n");
   }
   // Print the doubled number and line numbers
 }

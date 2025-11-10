@@ -1,0 +1,23 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <string.h>
+
+int cnt = 0;
+
+void *func() {
+  for (int i = 0; i < 10000000; i++) {
+    cnt++;
+  }
+  return NULL;
+}
+
+int main() {
+  pthread_t thread1;
+  pthread_t thread2;
+  pthread_create(&thread1, NULL, func, NULL);
+  pthread_create(&thread2, NULL, func, NULL);
+  pthread_join(thread1, NULL);
+  pthread_join(thread2, NULL);
+
+  printf("%d", cnt);
+}

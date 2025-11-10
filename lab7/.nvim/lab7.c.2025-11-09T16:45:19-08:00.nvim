@@ -85,7 +85,7 @@ void groupByKey(IntermediateInput *input, Output *output, int *result_count) {
     if (input->doubled_value == output[i].doubled_value) {
       output[i].line_numbers[output->count] = input->line_number;
       in = 1;
-      output[i].count++;
+      output->count++;
     }
   }
   if (*result_count == 0) {
