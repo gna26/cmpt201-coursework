@@ -1,0 +1,1 @@
+(mapreduce PRIVATE -fsanitize=thread -g -fsanitize=address)
