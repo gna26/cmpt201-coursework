@@ -211,7 +211,8 @@ static void *run_client(void *args) {
 
       struct list_handle *list_handle = cargs->list_handle;
       // TODO: Safely use add_to_list to add new_node to the list
-
+ 
+  
       pthread_mutex_lock(cargs->list_lock);
       add_to_list(list_handle, new_node);
 
